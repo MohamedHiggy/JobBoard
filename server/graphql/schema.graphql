@@ -7,7 +7,22 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 type Query {
     users: [User!]! @paginate(defaultCount: 1)
     user(id: ID! @eq): User @find
+
+    tags: [Tag!] @all
+    tag(slug: String! @eq): Tag @find
+
+    jobs(
+        orderBy: _ @orderBy(columns: ["created_at"])
+        hasTags: _ @whereHasConditions(columns: ["slug"])
+    ): [Job!]! @all
 }
+
+type Tag {
+    id: ID!
+    title: String!
+    slug: String!
+}
+
 
 type User {
     id: ID!
@@ -15,4 +30,15 @@ type User {
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
+}
+
+type Job {
+    id: ID!
+    job_title: String!
+    job_location: String!
+    job_link: String!
+    company_name: String!
+    company_logo: String!
+    tags: [Tag!]! @belongsToMany
+    user: User! @belongsTo
 }

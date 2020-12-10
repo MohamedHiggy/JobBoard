@@ -32,10 +32,40 @@ export default {
         // https://go.nuxtjs.dev/axios
         '@nuxtjs/axios',
         '@nuxtjs/auth',
+        '@nuxtjs/apollo',
     ],
 
+    // apollo module configuration (https://github.com/nuxt-community/apollo-module)
+    apollo: {
+        clientConfigs: {
+            default: {
+                httpLinkOptions: {
+                    credentials: 'include'
+                },
+                httpEndpoint: 'http://localhost/graphql',
+            }
+        }
+    },
+    // auth module configuration (https://auth.nuxtjs.org/)
+    auth: {
+        strategies: {
+            local: {
+                endpoints: {
+                    login: { url: '/api/login', method: 'post', propertyName: false },
+                    logout: { url: '/api/logout', method: 'post' },
+                    user: { url: '/api/user', method: 'get', propertyName: false }
+                },
+                tokenRequired: false,
+                tokeType: false
+            },
+        },
+        localStorage: false
+    },
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-    axios: {},
+    axios: {
+        baseURL: 'http://localhost',
+        credentials: true
+    },
 
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {}
