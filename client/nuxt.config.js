@@ -1,7 +1,7 @@
 export default {
     // Global page headers (https://go.nuxtjs.dev/config-head)
     head: {
-        title: 'client',
+        title: 'jobsclient',
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -16,7 +16,9 @@ export default {
     css: [],
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-    plugins: [],
+    plugins: [
+        './plugins/vue-select'
+    ],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
     components: true,
@@ -35,7 +37,6 @@ export default {
         '@nuxtjs/apollo',
     ],
 
-    // apollo module configuration (https://github.com/nuxt-community/apollo-module)
     apollo: {
         clientConfigs: {
             default: {
@@ -46,7 +47,7 @@ export default {
             }
         }
     },
-    // auth module configuration (https://auth.nuxtjs.org/)
+
     auth: {
         strategies: {
             local: {
@@ -56,11 +57,12 @@ export default {
                     user: { url: '/api/user', method: 'get', propertyName: false }
                 },
                 tokenRequired: false,
-                tokeType: false
-            },
+                tokenType: false
+            }
         },
         localStorage: false
     },
+
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
         baseURL: 'http://localhost',

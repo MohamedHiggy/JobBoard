@@ -5,16 +5,18 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
 type Query {
-    users: [User!]! @paginate(defaultCount: 1)
+    users: [User!]! @paginate(defaultCount: 2)
     user(id: ID! @eq): User @find
 
-    tags: [Tag!] @all
+    tags: [Tag!]! @all
     tag(slug: String! @eq): Tag @find
 
     jobs(
-        orderBy: _ @orderBy(columns: ["created_at"])
+        orderBy: _ @orderBy(columns: ["pinned", "created_at"])
         hasTags: _ @whereHasConditions(columns: ["slug"])
     ): [Job!]! @all
+
+    me: User @auth
 }
 
 type Tag {
@@ -23,13 +25,17 @@ type Tag {
     slug: String!
 }
 
-
 type User {
     id: ID!
     name: String!
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
+
+    jobs(
+        id: ID @eq
+        orderBy: _ @orderBy(columns: ["pinned", "created_at"])
+    ): [Job!]! @hasMany
 }
 
 type Job {
@@ -37,8 +43,64 @@ type Job {
     job_title: String!
     job_location: String!
     job_link: String!
+    highlighted: Boolean!
+    pinned: Boolean!
     company_name: String!
     company_logo: String!
+    created_at: DateTime!
+    updated_at: DateTime!
     tags: [Tag!]! @belongsToMany
     user: User! @belongsTo
+}
+
+input CreateUserInput {
+    name: String @rules(apply: ["required"])
+    email: String @rules(apply: ["required", "email"])
+    password: String @rules(apply: ["required", "min:5"]) @hash
+}
+
+input CreateUserBelongsTo {
+    create: CreateUserInput
+}
+
+input CreateTagsBelongsToMany {
+    connect: [ID!] @rulesForArray(apply: ["required"])
+}
+
+input UpdateTagsBelongsToMany {
+    sync: [ID!] @rulesForArray(apply: ["required"])
+}
+
+input CreateJobInput {
+    job_title: String @rules(apply: ["required"])
+    job_location: String @rules(apply: ["required"])
+    job_link: String @rules(apply: ["required", "url"])
+    company_name: String @rules(apply: ["required"])
+    company_logo: String @rules(apply: ["required", "url"])
+    highlighted: Boolean @rules(apply: ["boolean"])
+    pinned: Boolean @rules(apply: ["boolean"])
+    user: CreateUserBelongsTo
+    tags: CreateTagsBelongsToMany!
+}
+
+input UpdateJobInput {
+    job_title: String @rules(apply: ["required"])
+    job_location: String @rules(apply: ["required"])
+    job_link: String @rules(apply: ["required", "url"])
+    company_name: String @rules(apply: ["required"])
+    company_logo: String @rules(apply: ["required", "url"])
+    highlighted: Boolean @rules(apply: ["boolean"])
+    pinned: Boolean @rules(apply: ["boolean"])
+    tags: UpdateTagsBelongsToMany!
+}
+
+type Mutation {
+    createJobAndRegisterUser(input: CreateJobInput! @spread): Job! @create
+
+    createJob(input: CreateJobInput! @spread): Job!
+        @guard
+        @create
+        @inject(context: "user.id", name: "user_id")
+
+    updateJob(id: ID!, input: UpdateJobInput! @spread): Job! @update @can(ability: "update", find: "id")
 }

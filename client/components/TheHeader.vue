@@ -1,22 +1,32 @@
 <template>
-  <header class="flex items-center justify-between p-6 bg-gray-200">
-    <nuxt-link :to="{name: 'index'}" exact-active-class="text-blue-500 font-bold">Jobs</nuxt-link>
-    <div class="flex items-center flex-wrap">
-      <span class="mx-4 font-bold">Username</span>
-      <nuxt-link :to="{name: 'index'}" class="mx-4">Mange listings</nuxt-link>
-      <nuxt-link :to="{name: 'index'}" class="mx-4">Post a job</nuxt-link>
-      <nuxt-link :to="{name: 'auth-login'}" class="mx-4" exact-active-class="text-blue-500 font-bold">Login</nuxt-link>
-      <nuxt-link :to="{name: 'index'}" class="mx-4">Logout</nuxt-link>
+  <header class="py-6 flex items-center justify-between">
+    <nuxt-link :to="{ name: 'index' }" exact-active-class="text-blue-500">Jobs</nuxt-link>
+    <div class="-mx-4 flex items-center flex-wrap">
+
+      <nuxt-link :to="{ name: 'jobs-create' }" class="mx-4" exact-active-class="text-blue-500">Post a job</nuxt-link>
+
+      <template v-if="$auth.loggedIn">
+        <span class="mx-4 font-bold">{{ $auth.user.name }}</span>
+        <nuxt-link :to="{ name: 'user-listings' }" class="mx-4" exact-active-class="text-blue-500">Manage listings</nuxt-link>
+        <a href="" class="mx-4" exact-active-class="text-blue-500" @click.prevent="logout">Logout</a>
+      </template>
+
+      <template v-if="!$auth.loggedIn">
+        <nuxt-link :to="{ name: 'login' }" class="mx-4" exact-active-class="text-blue-500">Login</nuxt-link>
+      </template>
+
     </div>
   </header>
 </template>
 
 <script>
   export default {
+    methods: {
+      async logout () {
+        await this.$auth.logout()
 
+        this.$router.replace({ name: 'index' })
+      }
+    }
   }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
