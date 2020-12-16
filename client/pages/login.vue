@@ -1,6 +1,6 @@
-<template>  
+<template>
   <div class="mt-10 flex justify-center">
-    <form action="" class="w-4/12" @submit.prevent="login">
+    <form action="" class="w-4/12" @submit.prevent="login" data-aos="zoom-in">
       <h2 class="mb-4 text-2xl font-bold">Login</h2>
 
       <div class="mb-4">

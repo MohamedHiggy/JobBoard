@@ -17,7 +17,8 @@ export default {
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
     plugins: [
-        './plugins/vue-select'
+        './plugins/vue-select',
+        { src: '~/plugins/aos.js', ssr: false },
     ],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
