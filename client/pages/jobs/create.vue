@@ -1,4 +1,4 @@
-<template>  
+<template>
   <div class="mt-10 flex justify-center">
     <form action="" class="w-6/12" @submit.prevent="submit">
       <div class="mb-10">

@@ -44,7 +44,7 @@ export default {
                 httpLinkOptions: {
                     credentials: 'include'
                 },
-                httpEndpoint: 'http://localhost/graphql',
+                httpEndpoint: 'http://server.test/graphql',
             }
         }
     },
@@ -66,7 +66,7 @@ export default {
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
-        baseURL: 'http://localhost',
+        baseURL: 'http://server.test/',
         credentials: true
     },
 
